@@ -35,3 +35,13 @@ https://github.com/rtk-ai/rtk/tree/v1.2.1
 https://github.com/oraios/serena/tree/v2.1.0
 https://github.com/mksglu/context-mode/tree/v2.2.3
 https://github.com/PrefectHQ/fastmcp/tree/v4.2.6
+
+## Persistent development install
+
+On network-enabled Linux x86-64 / WSL with uv and Node 24.15+:
+
+    bash scripts/install_dev.sh
+    source .radar-tools/activate.sh
+    bash scripts/register_codex.sh
+
+This installs all pinned tools under `.radar-tools` (ignored by Git), and only the registration script edits the active Codex MCP config. Review Context Mode's setup plan before enabling its hooks. RTK stays in manual mode to avoid overlapping hooks. No global proxy, authentication, or paid inference is configured.

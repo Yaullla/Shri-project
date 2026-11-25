@@ -1,4 +1,4 @@
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import ROUND_HALF_UP, Decimal
 from math import isfinite
 
 
@@ -10,7 +10,7 @@ def calculate_margin(purchase_rub: float, sale_rub: float, shipping_rub: float =
         raise ValueError("Inputs must be finite and nonnegative")
     if sale_rub <= 0 or fee_percent >= 100:
         raise ValueError("Positive sale price and fee below 100% required")
-    p, s, sh, c, o, f = map(lambda v: Decimal(str(v)), values)
+    p, s, sh, c, o, f = (Decimal(str(v)) for v in values)
     landed = p + sh + c + o
     fees = s * f / 100
     profit = s - landed - fees

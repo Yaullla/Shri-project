@@ -2,15 +2,16 @@
 import asyncio
 import sys
 from pathlib import Path
+
 from fastmcp import Client
+from fastmcp.client.transports import StdioTransport
 
 
 async def main():
     root = Path(__file__).resolve().parents[1]
-    config = {"mcpServers": {"radar": {"command": sys.executable,
-               "args": ["-m", "radar.server"], "cwd": str(root)}}}
-    # One-server config preserves original tool names in FastMCP.
-    async with Client(config, mode="legacy") as client:
+    transport = StdioTransport(command=sys.executable,
+                               args=["-m", "radar.server"], cwd=str(root), keep_alive=False)
+    async with Client(transport, mode="legacy") as client:
         names = {t.name for t in await client.list_tools()}
         expected = {"calculate_margin", "competitive_price", "source_health",
                     "inspect_snapshot", "price_history", "find_deals", "get_exchange_rates"}

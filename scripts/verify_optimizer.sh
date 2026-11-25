@@ -2,7 +2,7 @@
 # Use only in an isolated development environment without secrets.
 set -euo pipefail
 tool="${1:?rtk, serena or context-mode}"
-work="$(mktemp -d)"
+work="$(mktemp -d "${RUNNER_TEMP:-${TMPDIR:-/tmp}}/radar.XXXXXX")"
 trap 'rm -rf "$work"' EXIT
 export HOME="$work/home"
 export CODEX_HOME="$HOME/.codex"
@@ -35,7 +35,8 @@ case "$tool" in
     export PATH="$work/npm/node_modules/.bin:$PATH"
     codex --version
     context-mode --help
-    context-mode setup --agents codex
+    context-mode setup --agents codex --yes
+    context-mode doctor --agents codex
     codex mcp list
     ;;
   *) echo "Unknown optimizer" >&2; exit 2 ;;

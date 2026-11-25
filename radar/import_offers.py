@@ -3,6 +3,7 @@ import argparse
 import json
 from contextlib import closing
 from pathlib import Path
+
 from radar.offers import connect, ingest
 
 

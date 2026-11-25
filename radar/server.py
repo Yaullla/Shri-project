@@ -1,9 +1,12 @@
 from contextlib import closing
+
 from fastmcp import FastMCP
+
 from radar.core import calculate_margin, competitive_price, source_health
-from radar.structured import parse_product_jsonld
-from radar.offers import connect, history, find_deals as rank_deals
 from radar.fx import fetch_rates
+from radar.offers import connect, history
+from radar.offers import find_deals as rank_deals
+from radar.structured import parse_product_jsonld
 
 mcp = FastMCP("Radar")
 

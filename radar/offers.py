@@ -1,7 +1,7 @@
 """Timestamped observations. Reviewed snapshots are not live offers."""
 import os
 import sqlite3
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -32,7 +32,7 @@ def moment(value):
     dt = datetime.fromisoformat(value)
     if dt.tzinfo is None:
         raise ValueError('Timestamp must include timezone')
-    return dt.astimezone(timezone.utc)
+    return dt.astimezone(UTC)
 
 
 def db_path():
@@ -66,7 +66,7 @@ def ingest(db, row, *, now=None):
     if not key or len(key) > 200 or len(row['url']) > 2000:
         raise ValueError('Invalid product key or URL')
     dt = moment(row['observed_at'])
-    if dt > (now or datetime.now(timezone.utc)) + timedelta(minutes=5):
+    if dt > (now or datetime.now(UTC)) + timedelta(minutes=5):
         raise ValueError('Future observation')
     db.execute('''INSERT INTO offers VALUES (?,?,?,?,?,?,?,?,?)
         ON CONFLICT(source,url,observed_at) DO NOTHING''',
@@ -89,7 +89,7 @@ def find_deals(db, rates, costs, *, min_margin=20, discount=5, fee=12, max_age_h
     if margin > 100 or disc > 5 or commission >= 100:
         raise ValueError('Invalid percentage')
     fx = {c: number(v, positive=True) for c, v in rates.items()}
-    cutoff = ((now or datetime.now(timezone.utc)) - timedelta(hours=max_age_hours)).isoformat(timespec='microseconds')
+    cutoff = ((now or datetime.now(UTC)) - timedelta(hours=max_age_hours)).isoformat(timespec='microseconds')
     rows = db.execute('''SELECT o.* FROM offers o JOIN (
         SELECT source,url,MAX(observed_at) AS ts FROM offers GROUP BY source,url
         ) l ON o.source=l.source AND o.url=l.url AND o.observed_at=l.ts

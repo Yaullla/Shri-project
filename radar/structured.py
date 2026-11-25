@@ -1,6 +1,6 @@
 import json
-from html.parser import HTMLParser
 from decimal import Decimal, InvalidOperation
+from html.parser import HTMLParser
 
 MAX_HTML = 2_000_000
 
@@ -68,7 +68,7 @@ def parse_product_jsonld(html: str) -> dict:
                 except (InvalidOperation, ValueError):
                     continue
                 currency = str(offer.get("priceCurrency", "")).upper()
-                if not price.is_finite() or not 0 < price <= Decimal("1000000000"):
+                if not price.is_finite() or not 0 < price <= Decimal(1000000000):
                     continue
                 if currency not in ("INR", "AED", "RUB", "USD", "EUR"):
                     continue

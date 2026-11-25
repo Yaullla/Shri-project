@@ -1,4 +1,5 @@
 import pytest
+
 from radar.core import calculate_margin, competitive_price, source_health
 from radar.structured import parse_product_jsonld
 

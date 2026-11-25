@@ -1,16 +1,18 @@
 from contextlib import closing
-from datetime import datetime, timezone, timedelta
-import pytest
-from radar.offers import connect, ingest, find_deals, history
-from radar.fx import parse_rates
+from datetime import UTC, datetime, timedelta
 
-NOW = datetime(2026, 11, 25, 12, tzinfo=timezone.utc)
+import pytest
+
+from radar.fx import parse_rates
+from radar.offers import connect, find_deals, history, ingest
+
+NOW = datetime(2026, 11, 25, 12, tzinfo=UTC)
 
 
 def observation(source, url, currency, price, **kwargs):
-    return dict(source=source, url=url, currency=currency, price=price,
-                product_key='brand|mpn|variant|new', available=True, reviewed=True,
-                observed_at=NOW.isoformat()) | kwargs
+    return {'source': source, 'url': url, 'currency': currency, 'price': price,
+            'product_key': 'brand|mpn|variant|new', 'available': True, 'reviewed': True,
+            'observed_at': NOW.isoformat()} | kwargs
 
 
 @pytest.fixture
