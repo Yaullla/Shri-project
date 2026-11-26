@@ -18,6 +18,7 @@ TARGETS = {
     "casio-ae": ("Noon", "https://www.noon.com/uae-en/men-s-stylish-analog-digital-quartz-watch-ga-2100-1a1/N37769673A/p/", "casio|ga-2100-1a1|watch|new"),
     "casio-ru": ("Watches RU", "https://www.watches.ru/Casio/GA-2100-1A1.html", "casio|ga-2100-1a1|watch|new"),
     "pi-in": ("Robocraze", "https://robocraze.com/products/raspberry-pi-5-8gb", "raspberry-pi|pi-5|8gb-board|new"),
+    "citywatch-ae": ("City Watches UAE", "https://www.citywatches.ae/products/casio-g-shock-ga-2100-1a1-ga2100-1a1-world-time-quartz-mens-watch", "casio|ga-2100-1a1|watch|new"),
     "watchhouse-ae": ("Watch House UAE", "https://watches.ae/products/ga-2100-1a1dr", "casio|ga-2100-1a1|watch|new"),
     "iwatch-ru": ("i-Watch", "https://i-watch.ru/naruchnye-chasy/casio/g-shock/g-shock-ga/ga-2100-1a1", "casio|ga-2100-1a1|watch|new"),
     "timeteam-ru": ("Time Team", "https://time-team.ru/product/ga-2100-1a1", "casio|ga-2100-1a1|watch|new"),

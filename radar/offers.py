@@ -7,6 +7,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 SOURCES = {
+    'City Watches UAE': ('AE', 'AED', 'citywatches.ae'),
     'Watch House UAE': ('AE', 'AED', 'watches.ae'),
     'i-Watch': ('RU', 'RUB', 'i-watch.ru'),
     'Time Team': ('RU', 'RUB', 'time-team.ru'),
@@ -123,3 +124,16 @@ def find_deals(db, rates, costs, *, min_margin=20, discount=5, fee=12, max_age_h
                         'sale_rub': round(float(sale), 2), 'profit_rub': round(float(profit), 2),
                         'margin_percent': round(float(pct), 2), 'status': 'reviewed_snapshot_estimate'})
     return sorted(out, key=lambda x: x['profit_rub'], reverse=True)[:limit]
+
+
+def review_observation(db, source, url, observed_at, *, confirmed=False):
+    """Mark exactly one existing snapshot as reviewed after operator verification."""
+    if confirmed is not True:
+        raise ValueError("Explicit operator confirmation required")
+    timestamp = moment(observed_at).isoformat(timespec="microseconds")
+    result = db.execute(
+        "UPDATE offers SET reviewed=1 WHERE source=? AND url=? AND observed_at=?",
+        (source, url, timestamp),
+    )
+    if result.rowcount != 1:
+        raise ValueError("Observation not found")

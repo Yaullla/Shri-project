@@ -1,8 +1,10 @@
 from contextlib import closing
 from urllib.error import HTTPError
 
+import pytest
+
 from radar.collector import collect, collect_and_store
-from radar.offers import connect, find_deals, history
+from radar.offers import connect, find_deals, history, review_observation
 
 HTML = '<script type="application/ld+json">{"@type":"Product","name":"Demo","sku":"TEST","offers":{"price":"1000","priceCurrency":"INR","availability":"https://schema.org/InStock"}}</script>'
 
@@ -71,3 +73,14 @@ def test_ambiguous_meta_rejected():
         return "User-agent: *\nAllow: /" if url.endswith("robots.txt") else html
 
     assert collect("casio-ru", reader=reader)["status"] == "no_offer"
+
+
+def test_review_requires_explicit_confirmation(tmp_path):
+    path = tmp_path / "test.sqlite3"
+    observation = collect_and_store("casio-in", path=path, reader=allowed_reader)["offers"][0]
+    with closing(connect(path)) as db, db:
+        args = (db, observation["source"], observation["url"], observation["observed_at"])
+        with pytest.raises(ValueError):
+            review_observation(*args)
+        review_observation(*args, confirmed=True)
+        assert history(db, observation["product_key"])[0]["reviewed"] == 1

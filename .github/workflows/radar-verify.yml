@@ -32,7 +32,22 @@ jobs:
           persist-credentials: false
       - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78
       - run: uv sync --python 3.13
-      - run: uv run python -m scripts.collect_prices watchhouse-ae iwatch-ru timeteam-ru casio-ru pi-in --fx
+      - name: Collect public price candidates
+        shell: bash
+        env:
+          RADAR_DB: ${{ runner.temp }}/radar-observations.sqlite3
+        run: |
+          set -o pipefail
+          uv run python -m scripts.collect_prices citywatch-ae watchhouse-ae timeteam-ru pi-in amazon-in --fx | tee "${RUNNER_TEMP}/radar-probe.jsonl"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: radar-public-price-probe
+          path: |
+            ${{ runner.temp }}/radar-probe.jsonl
+            ${{ runner.temp }}/radar-observations.sqlite3
+          retention-days: 7
+          if-no-files-found: warn
   optimizers:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
