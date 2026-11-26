@@ -7,10 +7,10 @@ from urllib.request import HTTPRedirectHandler, Request, build_opener
 from urllib.robotparser import RobotFileParser
 
 from radar.offers import SOURCES, connect, ingest
-from radar.structured import parse_product_jsonld
+from radar.structured import parse_product_jsonld, parse_product_meta
 
 USER_AGENT = "RadarPriceMonitor/0.1"
-MAX_BYTES = 2_000_000
+MAX_BYTES = 5_000_000
 
 # Fixed URLs: external content cannot choose new targets or trigger arbitrary requests.
 TARGETS = {
@@ -18,6 +18,9 @@ TARGETS = {
     "casio-ae": ("Noon", "https://www.noon.com/uae-en/men-s-stylish-analog-digital-quartz-watch-ga-2100-1a1/N37769673A/p/", "casio|ga-2100-1a1|watch|new"),
     "casio-ru": ("Watches RU", "https://www.watches.ru/Casio/GA-2100-1A1.html", "casio|ga-2100-1a1|watch|new"),
     "pi-in": ("Robocraze", "https://robocraze.com/products/raspberry-pi-5-8gb", "raspberry-pi|pi-5|8gb-board|new"),
+    "watchhouse-ae": ("Watch House UAE", "https://watches.ae/products/ga-2100-1a1dr", "casio|ga-2100-1a1|watch|new"),
+    "iwatch-ru": ("i-Watch", "https://i-watch.ru/naruchnye-chasy/casio/g-shock/g-shock-ga/ga-2100-1a1", "casio|ga-2100-1a1|watch|new"),
+    "timeteam-ru": ("Time Team", "https://time-team.ru/product/ga-2100-1a1", "casio|ga-2100-1a1|watch|new"),
     "amazon-in": ("Amazon.in", "https://www.amazon.in/dp/B0DFMS17RG", "mattel|jbj17|doll|new"),
 }
 
@@ -59,21 +62,25 @@ def collect(target_id, *, reader=read_page):
     try:
         html = reader(url)
         parsed = parse_product_jsonld(html)
+        method = "jsonld"
+        if not parsed["offers"]:
+            parsed = parse_product_meta(html)
+            method = "html_meta"
     except HTTPError as exc:
         return result | {"status": f"page_http_{exc.code}"}
-    except (URLError, TimeoutError, ValueError, OSError):
-        return result | {"status": "page_unavailable"}
+    except (URLError, TimeoutError, ValueError, OSError) as exc:
+        return result | {"status": "page_unavailable", "error_type": type(exc).__name__}
     offers = [r for r in parsed["offers"] if r["currency"] == currency]
     # All remote data stays unreviewed. Multiple variants must be manually resolved.
     if len(offers) != 1:
         return result | {"status": "no_offer" if not offers else "ambiguous_offers",
-                         "offer_count": len(offers)}
+                         "offer_count": len(offers), "method": method}
     item = offers[0]
     availability = item["availability"].rsplit("/", 1)[-1].lower()
     row = {"source": source, "url": url, "observed_at": observed_at,
            "product_key": key, "currency": currency, "price": item["price"],
-           "available": availability == "instock", "reviewed": False}
-    return result | {"status": "candidate_unreviewed", "offers": [row]}
+           "available": availability in ("instock", "in stock", "in_stock"), "reviewed": False}
+    return result | {"status": "candidate_unreviewed", "method": method, "offers": [row]}
 
 
 def collect_and_store(target_id, *, path=None, reader=read_page):

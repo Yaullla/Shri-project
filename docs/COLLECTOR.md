@@ -17,3 +17,5 @@ A blocked or missing result is explicit; there is no fabricated price.
 
 MCP reads bounded history and ranks reviewed snapshots only. Network collection
 is deliberately operator-side, not an arbitrary URL tool exposed to the model.
+
+Alternate retailers: Watch House UAE, i-Watch and Time Team. A metadata fallback accepts only explicit, unambiguous price and currency fields. Missing or conflicting fields are rejected. All resulting records remain unreviewed.

@@ -7,6 +7,9 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 SOURCES = {
+    'Watch House UAE': ('AE', 'AED', 'watches.ae'),
+    'i-Watch': ('RU', 'RUB', 'i-watch.ru'),
+    'Time Team': ('RU', 'RUB', 'time-team.ru'),
     'Casio India': ('IN', 'INR', 'casio.com'),
     'Robocraze': ('IN', 'INR', 'robocraze.com'),
     'Watches RU': ('RU', 'RUB', 'watches.ru'),
