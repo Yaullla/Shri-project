@@ -1,4 +1,5 @@
 from contextlib import closing
+from http.client import IncompleteRead
 from urllib.error import HTTPError
 
 import pytest
@@ -84,3 +85,15 @@ def test_review_requires_explicit_confirmation(tmp_path):
             review_observation(*args)
         review_observation(*args, confirmed=True)
         assert history(db, observation["product_key"])[0]["reviewed"] == 1
+
+
+def test_incomplete_http_response():
+    def reader(url, limit=2_000_000):
+        if url.endswith("robots.txt"):
+            return "User-agent: *\nAllow: /"
+        raise IncompleteRead(b"partial", 100)
+
+    result = collect("citywatch-ae", reader=reader)
+    assert result["status"] == "page_unavailable"
+    assert result["error_type"] == "IncompleteRead"
+    assert result["offers"] == []

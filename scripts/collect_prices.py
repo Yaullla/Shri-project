@@ -3,6 +3,7 @@ import argparse
 import json
 import time
 from datetime import UTC, datetime
+from http.client import HTTPException
 
 from radar.collector import TARGETS, collect_and_store
 from radar.fx import fetch_rates
@@ -23,7 +24,7 @@ def main():
         try:
             rates = fetch_rates(datetime.now(UTC).date().isoformat())
             print(json.dumps({"fx_status": "received", **rates}), flush=True)
-        except (OSError, ValueError, KeyError):
+        except (OSError, ValueError, KeyError, HTTPException):
             print(json.dumps({"fx_status": "unavailable"}), flush=True)
 
 

@@ -1,6 +1,7 @@
 """Bounded, operator-configured public-page collector. No bypass of access controls."""
 from contextlib import closing
 from datetime import UTC, datetime
+from http.client import HTTPException
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
@@ -56,7 +57,7 @@ def collect(target_id, *, reader=read_page):
     except HTTPError as exc:
         # Conservative: even a missing robots file needs operator review.
         return result | {"status": f"robots_http_{exc.code}"}
-    except (URLError, TimeoutError, ValueError, OSError):
+    except (URLError, TimeoutError, ValueError, OSError, HTTPException):
         return result | {"status": "robots_unavailable"}
     if not parser.can_fetch(USER_AGENT, url):
         return result | {"status": "robots_disallowed"}
@@ -69,7 +70,7 @@ def collect(target_id, *, reader=read_page):
             method = "html_meta"
     except HTTPError as exc:
         return result | {"status": f"page_http_{exc.code}"}
-    except (URLError, TimeoutError, ValueError, OSError) as exc:
+    except (URLError, TimeoutError, ValueError, OSError, HTTPException) as exc:
         return result | {"status": "page_unavailable", "error_type": type(exc).__name__}
     offers = [r for r in parsed["offers"] if r["currency"] == currency]
     # All remote data stays unreviewed. Multiple variants must be manually resolved.
