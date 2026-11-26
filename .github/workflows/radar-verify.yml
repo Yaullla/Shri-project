@@ -1,7 +1,7 @@
 name: Radar verification
 on:
   push:
-    branches: ['feat/radar-mcp-core', 'feat/price-collector', 'main']
+    branches: ['feat/radar-mcp-core', 'feat/price-collector', 'feat/buyer-workspace', 'main']
   pull_request:
     branches: ['main']
   workflow_dispatch:
