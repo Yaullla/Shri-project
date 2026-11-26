@@ -1,7 +1,7 @@
 name: Radar verification
 on:
   push:
-    branches: ['feat/radar-mcp-core', 'feat/price-collector', 'main']
+    branches: ['feat/radar-mcp-core', 'feat/price-collector', 'feat/buyer-workspace', 'main']
   pull_request:
     branches: ['main']
   workflow_dispatch:
@@ -23,6 +23,37 @@ jobs:
       - run: uv run pytest -q
       - run: uv run python scripts/mcp_smoke.py
       - run: uv run ruff check radar tests scripts
+  browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78
+      - run: uv sync --python 3.13
+      - run: uv run --with playwright==1.65.1 python -m playwright install --with-deps chromium
+      - name: Browser acceptance
+        shell: bash
+        env:
+          RADAR_DB: ${{ runner.temp }}/radar-workspace.sqlite3
+        run: |
+          uv run uvicorn radar.web:app --host 127.0.0.1 --port 8000 > "${RUNNER_TEMP}/radar-web.log" 2>&1 &
+          trap 'kill $! 2>/dev/null || true' EXIT
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8000/api/observations >/dev/null; then break; fi
+            sleep 1
+          done
+          uv run --with playwright==1.65.1 python scripts/browser_workspace.py
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: radar-workspace-preview
+          path: |
+            web/index.html
+            preview/*.png
+            docs/WORKSPACE.md
+          retention-days: 30
   network-probe:
     runs-on: ubuntu-24.04
     timeout-minutes: 6

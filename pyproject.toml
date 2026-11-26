@@ -2,7 +2,7 @@
 name = "radar-mcp"
 version = "0.1.0"
 requires-python = ">=3.11"
-dependencies = ["fastmcp==4.2.6"]
+dependencies = ["fastmcp==4.2.6", "fastapi==0.165.0", "uvicorn>=0.34,<1"]
 [dependency-groups]
 dev = ["pytest>=8,<10", "ruff>=0.12,<1"]
 [tool.pytest.ini_options]
