@@ -40,7 +40,7 @@ def main():
         page.wait_for_function("document.querySelector('#calcResult').innerText.includes('20.5%')")
         page.screenshot(path=OUT / "03-calculator.png", full_page=True)
         page.locator('nav [data-page="calendar"]').click()
-        page.locator("[data-day=27]").click()
+        page.locator('[data-day="27"]').click()
         page.locator("#events").get_by_text("Black Friday", exact=True).wait_for()
         with page.expect_download() as download:
             page.locator("#ics").click()
