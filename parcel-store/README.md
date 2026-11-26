@@ -39,3 +39,20 @@ GitHub repository metadata was queried directly. Stars change; reported SPDX lic
 | [WXT](https://github.com/wxt-dev/wxt) | 10782 | MIT | Browser extension |
 
 The existing HTML is dependency-free. This commit imports the prototype and its design specification, not a React migration or hosted service.
+
+
+## EMS tracking preview (v0.3.1)
+
+- tracking.py: server-side SOAP history adapter with per-process caching (15 minutes), XML validation, deduplication, and stale-data fallback. No API ETA field is assumed.
+- preview_server.py: localhost-only server at port 8080, with an explicit tracking-number allowlist. Not a production service.
+- test_tracking.py: synthetic tests (no calls to the carrier).
+- index.html: manual tracking remains available; "Обновить EMS" fetches from same-origin server. Order history tries to refresh on opening and every 15 minutes while visible. Manual ETA range remains separate.
+- Official API overview: https://info.pochta.ru/support/business/api and tracking portal https://tracking.pochta.ru/. SOAP format cross-checked against published implementations; the detailed official specification was unavailable in this research session. Live credentials and a real authorized tracking number are required to confirm endpoint compatibility.
+
+Local setup from parcel-store directory:
+1. Obtain tracking API access at the official carrier portal. Do not send or commit credentials.
+2. Set environment variables POCHTA_TRACK_LOGIN, POCHTA_TRACK_PASSWORD, POCHTA_ALLOWED_TRACKS (comma-separated real shipment identifiers you are authorized to track).
+3. Run python -m unittest -v test_tracking and python preview_server.py. Open http://127.0.0.1:8080.
+4. In demo admin > supplies select parcel, enter the same tracking number and actual dispatch date. Save and click "Обновить EMS". Customer history reads the same parcel data in this browser only.
+
+Production blockers: shared database, server authorization by order ownership, durable cached tracking snapshots, scheduled background synchronization, notification consent, validated carrier credentials and actual service response. A local browser prototype is not a live shop and must not be exposed publicly.
