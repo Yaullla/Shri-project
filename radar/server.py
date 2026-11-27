@@ -6,6 +6,7 @@ from radar.core import calculate_margin, competitive_price, source_health
 from radar.fx import fetch_rates
 from radar.offers import connect, history
 from radar.offers import find_deals as rank_deals
+from radar.quote_engine import calculate_quote
 from radar.structured import parse_product_jsonld
 
 mcp = FastMCP("Radar")
@@ -42,6 +43,18 @@ def get_exchange_rates(day: str) -> dict:
     """Fetch official CBR rates for YYYY-MM-DD. Check returned effective date.
     These are reference rates, not actual conversion costs. Network required."""
     return fetch_rates(day)
+
+@mcp.tool
+def estimate_customer_quote(purchase: float, rate: float, shipping: float,
+                            import_cost: float, other: float, fee_percent: float,
+                            margin_percent: float) -> dict:
+    """Estimate a customer price. Rate is RUB per currency unit; shipping,
+    import_cost and other are explicit RUB costs. Fee and target margin are
+    percentages of selling price. No sale, purchase, or publication is performed.
+    Verify availability, import legality and complete costs independently."""
+    return calculate_quote(purchase, rate, shipping, import_cost, other,
+                           fee_percent, margin_percent)
+
 
 if __name__ == "__main__":
     mcp.run()
