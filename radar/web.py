@@ -6,10 +6,12 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
+from radar.community import router
 from radar.core import calculate_margin
 from radar.offers import connect
 
-app = FastAPI(title="Radar Buyer Workspace", version="0.4.0")
+app = FastAPI(title="Radar Buyer Workspace", version="0.5.0")
+app.include_router(router)
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -37,3 +39,9 @@ def observations():
 @app.post("/api/calculate")
 def calculate(body: Calculation):
     return calculate_margin(**body.model_dump())
+
+
+@app.get("/admin", include_in_schema=False)
+@app.get("/travel", include_in_schema=False)
+def workspace_sections():
+    return FileResponse(ROOT / "web" / "community.html")
