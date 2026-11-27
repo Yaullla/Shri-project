@@ -6,6 +6,19 @@ from urllib.parse import parse_qsl
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 ROOT = Path(__file__).resolve().parent
+ASSETS = Path(os.environ.get("SAM_ASSETS_DIR",str(ROOT/"private-assets")))
+DETAIL_FIELDS = ("ingredients","storage","allergens","nutrition","source")
+
+def product_details(sku):
+    # Operator-reviewed data only; never load from arbitrary user paths.
+    details={}
+    try:
+        raw=json.loads((ASSETS/(sku+".json")).read_text(encoding="utf-8"))
+        if isinstance(raw,dict):
+            details={k:raw[k][:2000] for k in DETAIL_FIELDS if isinstance(raw.get(k),str)}
+    except (OSError,ValueError): pass
+    if (ASSETS/(sku+".webp")).is_file(): details["photo"]="/photos/"+sku+".webp"
+    return details
 PRODUCTS = [
  ("ejk","ЕЖК Провансаль 67%","400 мл","Соусы"),("ricco","Mr.Ricco Провансаль 67%","400 мл","Соусы"),
  ("sloboda","Слобода Провансаль 67%","400 мл","Соусы"),("sprats","За Родину — шпроты","160 г","Консервы"),
@@ -72,7 +85,7 @@ class Store:
         return Store.open_parcel(c)
     def catalog(self):
         with self.connection() as c:
-            return {"products":[dict(r) for r in c.execute("SELECT * FROM products ORDER BY rowid")],
+            return {"products":[dict(r) | {"details":product_details(r["id"])} for r in c.execute("SELECT * FROM products ORDER BY rowid")],
                     "parcel":dict(self.open_parcel(c))}
     @staticmethod
     def order_data(c,o):
@@ -168,6 +181,12 @@ def build_handler(store,token,admins,enabled):
                 if path in ("/","/miniapp"):
                     return self.send(200,(ROOT/"miniapp.html").read_bytes(),"text/html; charset=utf-8")
                 if path=="/health": return self.send(200,{"ok":True})
+                match=re.fullmatch(r"/photos/([a-z]+)\.webp",path)
+                if match and match[1] in {p[0] for p in PRODUCTS}:
+                    asset=ASSETS/(match[1]+".webp")
+                    if asset.is_file() and asset.stat().st_size<=2_000_000:
+                        return self.send(200,asset.read_bytes(),"image/webp")
+                    raise ApiError(404,"Фото не найдено.")
                 if path=="/api/catalog": return self.send(200,store.catalog() | {"accepting":enabled})
                 if path=="/api/orders": return self.send(200,store.orders(self.identity()[0]))
                 if path=="/api/admin/summary":
