@@ -56,3 +56,10 @@ Local setup from parcel-store directory:
 4. In demo admin > supplies select parcel, enter the same tracking number and actual dispatch date. Save and click "Обновить EMS". Customer history reads the same parcel data in this browser only.
 
 Production blockers: shared database, server authorization by order ownership, durable cached tracking snapshots, scheduled background synchronization, notification consent, validated carrier credentials and actual service response. A local browser prototype is not a live shop and must not be exposed publicly.
+
+
+## Samobranka v0.5 — storefront refresh
+
+Brand: Самобранка. Seven hash-addressable views, product detail cards, original cobalt porcelain ornament, independent parcel overview, native CSS motion and optional pinned local Anime.js. Download index.html to open the CSS-only preview; serve the directory over HTTP for optional Anime.js. Do not deploy as a production store. EMS remains inactive outside the localhost integration preview; shared database/auth and public hosting are outstanding. See DESIGN.md for motion budget and limitations. Run `node --test test_motion.mjs` for the synthetic DOM smoke tests. Real-browser testing and product-photo verification are still required.
+
+Next milestone: mobile browser validation (390/768/1440px), reviewed/licensed product assets, authenticated shared database and transactional parcel capacity, Telegram bot/Mini App, then approved community advertising and opt-in notifications.
