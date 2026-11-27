@@ -1,0 +1,24 @@
+name: Parcel store verification
+on:
+  push:
+    branches: [feat/parcel-store]
+    paths: ['parcel-store/**', '.github/workflows/parcel-store-verify.yml']
+  pull_request:
+    paths: ['parcel-store/**', '.github/workflows/parcel-store-verify.yml']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: parcel-store
+    steps:
+      - uses: actions/checkout@v4
+      - name: Python offline regression tests
+        run: |
+          python3 -m unittest -v test_pilot test_tracking
+          python3 -m py_compile pilot_api.py bot.py
+      - name: Node smoke tests
+        run: node --test test_motion.mjs
