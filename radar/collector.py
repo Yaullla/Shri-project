@@ -15,6 +15,7 @@ MAX_BYTES = 5_000_000
 
 # Fixed URLs: external content cannot choose new targets or trigger arbitrary requests.
 TARGETS = {
+    "pi-ru": ("Amperka", "https://amperka.ru/product/raspberry-pi-5-8gb", "raspberry-pi|pi-5|8gb-board|new"),
     "casio-in": ("Casio India", "https://www.casio.com/in/watches/gshock/product.GA-2100-1A1/", "casio|ga-2100-1a1|watch|new"),
     "casio-ae": ("Noon", "https://www.noon.com/uae-en/men-s-stylish-analog-digital-quartz-watch-ga-2100-1a1/N37769673A/p/", "casio|ga-2100-1a1|watch|new"),
     "casio-ru": ("Watches RU", "https://www.watches.ru/Casio/GA-2100-1A1.html", "casio|ga-2100-1a1|watch|new"),
