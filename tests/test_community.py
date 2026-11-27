@@ -9,7 +9,8 @@ from radar.seed_communities import seed
 def test_crm_crud(tmp_path, monkeypatch):
     monkeypatch.setenv("RADAR_DB", str(tmp_path / "crm.sqlite3"))
     monkeypatch.setenv("RADAR_ADMIN_PASSWORD", "test-admin-long-password")
-    client = TestClient(app, auth=("admin", "test-admin-long-password"))
+    client = TestClient(app)
+    client.auth = ("admin", "test-admin-long-password")
     body = {"name": "Fixture", "url": "https://t.me/example_fixture",
             "country": "India", "routes": "IN-RU", "leads": 2}
     assert client.get("/api/communities").json() == {"rows": []}
@@ -27,7 +28,8 @@ def test_crm_crud(tmp_path, monkeypatch):
 def test_trip_board(tmp_path, monkeypatch):
     monkeypatch.setenv("RADAR_DB", str(tmp_path / "trips.sqlite3"))
     monkeypatch.setenv("RADAR_TRAVELER_PASSWORD", "test-traveler-long-password")
-    client = TestClient(app, auth=("traveler", "test-traveler-long-password"))
+    client = TestClient(app)
+    client.auth = ("traveler", "test-traveler-long-password")
     body = {"origin": "Delhi", "destination": "Moscow",
             "departure": (datetime.now(UTC).date() + timedelta(days=1)).isoformat(),
             "capacity_kg": 2, "reward_rub": 1000}
@@ -63,7 +65,8 @@ def test_access_gates(tmp_path, monkeypatch):
 def test_seed_does_not_overwrite_operator_edits(tmp_path, monkeypatch):
     monkeypatch.setenv("RADAR_DB", str(tmp_path / "seed.sqlite3"))
     monkeypatch.setenv("RADAR_ADMIN_PASSWORD", "test-admin-long-password")
-    client = TestClient(app, auth=("admin", "test-admin-long-password"))
+    client = TestClient(app)
+    client.auth = ("admin", "test-admin-long-password")
     assert seed() == 5
     row = client.get("/api/communities").json()["rows"][0]
     assert row["ad_cost_rub"] is None
