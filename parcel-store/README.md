@@ -63,3 +63,25 @@ Production blockers: shared database, server authorization by order ownership, d
 Brand: Самобранка. Seven hash-addressable views, product detail cards, original cobalt porcelain ornament, independent parcel overview, native CSS motion and optional pinned local Anime.js. Download index.html to open the CSS-only preview; serve the directory over HTTP for optional Anime.js. Do not deploy as a production store. EMS remains inactive outside the localhost integration preview; shared database/auth and public hosting are outstanding. See DESIGN.md for motion budget and limitations. Run `node --test test_motion.mjs` for the synthetic DOM smoke tests. Real-browser testing and product-photo verification are still required.
 
 Next milestone: mobile browser validation (390/768/1440px), reviewed/licensed product assets, authenticated shared database and transactional parcel capacity, Telegram bot/Mini App, then approved community advertising and opt-in notifications.
+
+
+## v0.6 — authenticated Telegram pilot
+
+Separate live-pilot client at `/miniapp`; existing `index.html` is still the browser-only demo. Do not confuse demo localStorage with real customer data. The full storefront and full admin panel have not yet been migrated to the pilot backend.
+
+### Local run (Python 3.10+, no third-party runtime packages)
+
+From parcel-store: `python -m unittest -v test_pilot test_tracking`, `node --test test_motion.mjs`, then `python pilot_api.py`. Open http://127.0.0.1:8081/miniapp. Anonymous visitors can inspect the catalogue but not submit or view private orders. The default catalogue has 13 interest-only items with no verified price/weight. Default net capacity is 29,000 g (demo assumption, configurable on first DB initialization). Keep real DB on a persistent, access-controlled disk; do not commit DB files.
+
+### Telegram setup (after TLS hosting is configured)
+
+1. Create bot at https://t.me/BotFather. Use the selected brand Самобранка; check username availability. Set TELEGRAM_BOT_TOKEN and SAM_ADMIN_IDS (comma-separated verified Telegram numeric IDs) via secret manager, not Git.
+2. Bind HTTPS reverse proxy to pilot_api.py at localhost:8081. Set SAM_DB to a protected persistent path. Add TLS, request/rate limits, backups and access-log redaction; do not expose the stdlib HTTP server directly.
+3. Set SAM_MINIAPP_URL to the HTTPS /miniapp URL; run `python bot.py --configure` then `python bot.py` with a supervised process. Configure Main Mini App in BotFather for startapp links; the bot responds to private /start, /help and /id only. It does not send unsolicited advertising.
+4. Verify image rights, exact product labels, import and carrier eligibility, pricing, storage, data notice and admin workflow. Add approved local SKU WebP images (<2MB) and JSON with ingredients/storage/allergens/nutrition/source to SAM_ASSETS_DIR (default private-assets). No invented photos. Use `python manage_pilot.py approve SKU GRAMS PRICE_KOPECKS --verified` for reviewed product data, or keep interest-only. `python manage_pilot.py parcel ID closed|sent|arrived|ready` controls manual tracking, optional --track, --sent, --eta-from, --eta-to. Dates YYYY-MM-DD.
+5. Only after acceptance testing, set SAM_ACCEPT_REQUESTS=1 and restart server. Do not enable payment yet. EMS API remains off. The API verifies Telegram initData HMAC and freshness, uses SQLite BEGIN IMMEDIATE and a unique open-parcel index, stores order snapshots and idempotency keys, and enforces owner/admin access. Source attribution reads signed start_param, not untrusted URL values.
+6. Pilot CRM currently includes read-only aggregate demand, requests, clients, source and parcel metrics; real product edits and manual parcel status use local operator CLI. Full financial dashboard, expense ledger, website login and shared storefront, notification delivery, PostgreSQL migration, reservation expiry, and privacy/data retention policy remain outstanding. SQLite pilot is one host only; do not scale horizontally or use an ephemeral filesystem.
+
+Official Telegram docs: https://core.telegram.org/bots/webapps#validating-data-received-via-the-mini-app ; https://core.telegram.org/bots/api#setchatmenubutton .
+
+Separate CI workflow .github/workflows/parcel-store-verify.yml added. Tests are synthetic and no live tokens or API calls are required. Live Telegram and browser verification still pending.
