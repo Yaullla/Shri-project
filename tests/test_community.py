@@ -2,8 +2,8 @@ from datetime import UTC, datetime, timedelta
 
 from fastapi.testclient import TestClient
 
-from radar.web import app
 from radar.seed_communities import seed
+from radar.web import app
 
 
 def test_crm_crud(tmp_path, monkeypatch):

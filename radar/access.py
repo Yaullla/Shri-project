@@ -1,6 +1,7 @@
 """Local workspace access gates. Not a multi-tenant authentication system."""
 import os
 import secrets
+from typing import Annotated
 from urllib.parse import urlsplit
 
 from fastapi import Depends, HTTPException, Request
@@ -27,9 +28,9 @@ def gate(role, request, credentials):
             raise HTTPException(403, "Cross-origin write forbidden")
 
 
-def admin(request: Request, credentials: HTTPBasicCredentials | None = Depends(basic)):
+def admin(request: Request, credentials: Annotated[HTTPBasicCredentials | None, Depends(basic)]):
     gate("admin", request, credentials)
 
 
-def traveler(request: Request, credentials: HTTPBasicCredentials | None = Depends(basic)):
+def traveler(request: Request, credentials: Annotated[HTTPBasicCredentials | None, Depends(basic)]):
     gate("traveler", request, credentials)
