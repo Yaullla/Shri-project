@@ -1,0 +1,275 @@
+{
+  "review": "Candidate list from prior research; not a current permission verification. All disabled.",
+  "communities": [
+    {
+      "id": "hikka360",
+      "name": "Хиккадува 360°",
+      "url": "https://t.me/hikkaduwa_360",
+      "kind": "classifieds",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    },
+    {
+      "id": "hikkabazar",
+      "name": "Хиккадува — барахолка",
+      "url": "https://t.me/hikkadyva_baraxlanet",
+      "kind": "classifieds",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    },
+    {
+      "id": "buy_sell",
+      "name": "Купи/Продай Sri Lanka",
+      "url": "https://t.me/Shri_Lanka_by_sell",
+      "kind": "classifieds",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    },
+    {
+      "id": "lankabazar",
+      "name": "Шри-Ланка — барахолка",
+      "url": "https://t.me/srilanka_baraholka",
+      "kind": "classifieds",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    },
+    {
+      "id": "dobromarket",
+      "name": "ДоброЛанка — купи/продай",
+      "url": "https://t.me/lankarumarket",
+      "kind": "classifieds",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    },
+    {
+      "id": "unawatuna_ads",
+      "name": "Унаватуна — объявления",
+      "url": "https://t.me/unawatuna_chatik",
+      "kind": "classifieds",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    },
+    {
+      "id": "unawatuna360",
+      "name": "Унаватуна 360°",
+      "url": "https://t.me/unawatuna_360",
+      "kind": "classifieds",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    },
+    {
+      "id": "unawatuna_bazar",
+      "name": "Унаватуна — барахолка",
+      "url": "https://t.me/ynavatyna_baraxlanet",
+      "kind": "classifieds",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    },
+    {
+      "id": "weligama360",
+      "name": "Велигама 360°",
+      "url": "https://t.me/weligama_360",
+      "kind": "classifieds",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    },
+    {
+      "id": "weligama_bazar",
+      "name": "Велигама — барахолка",
+      "url": "https://t.me/veligama_baraxlanet",
+      "kind": "classifieds",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    },
+    {
+      "id": "mirissa360",
+      "name": "Мирисса 360°",
+      "url": "https://t.me/mirissa_360",
+      "kind": "classifieds",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    },
+    {
+      "id": "mirissa_bazar",
+      "name": "Мирисса — барахолка",
+      "url": "https://t.me/mirissa_baraxlanet",
+      "kind": "classifieds",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    },
+    {
+      "id": "colombo_bazar",
+      "name": "Коломбо — барахолка",
+      "url": "https://t.me/collombo_baraxlanet",
+      "kind": "classifieds",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    },
+    {
+      "id": "lanka_main",
+      "name": "Шри-Ланка — главный чат",
+      "url": "https://t.me/Shri_Lanka_RU",
+      "kind": "general",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    },
+    {
+      "id": "hikka",
+      "name": "Хиккадува",
+      "url": "https://t.me/Shri_Lanka_Hikkaduwa",
+      "kind": "general",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    },
+    {
+      "id": "hikka_people",
+      "name": "Хиккадува People",
+      "url": "https://t.me/Hikkaduwa_people",
+      "kind": "general",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    },
+    {
+      "id": "lanka",
+      "name": "Шри-Ланка — общий чат",
+      "url": "https://t.me/sr1_lanka",
+      "kind": "general",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    },
+    {
+      "id": "unawatuna",
+      "name": "Унаватуна",
+      "url": "https://t.me/Shri_Lanka_Unawatuna",
+      "kind": "general",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    },
+    {
+      "id": "mirissa_chat",
+      "name": "Мирисса Chat",
+      "url": "https://t.me/mirissa_chat",
+      "kind": "general",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    },
+    {
+      "id": "mirissa",
+      "name": "Мирисса",
+      "url": "https://t.me/shri_lanka_mirissa",
+      "kind": "general",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    },
+    {
+      "id": "weligama",
+      "name": "Велигама",
+      "url": "https://t.me/shri_lanka_weligama",
+      "kind": "general",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    },
+    {
+      "id": "weligamnost",
+      "name": "Велигамность",
+      "url": "https://t.me/weligamnost",
+      "kind": "general",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    },
+    {
+      "id": "weligama_chat",
+      "name": "Велигама Chat",
+      "url": "https://t.me/weligama_chat",
+      "kind": "general",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    },
+    {
+      "id": "dobrolanka",
+      "name": "ДоброЛанка",
+      "url": "https://t.me/lankaru",
+      "kind": "general",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    },
+    {
+      "id": "dobrohikka",
+      "name": "ДоброЛанка — Хиккадува",
+      "url": "https://t.me/lankaruhikka",
+      "kind": "general",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    },
+    {
+      "id": "ahangama",
+      "name": "Ахангама",
+      "url": "https://t.me/shri_lanka_ahangama",
+      "kind": "general",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    },
+    {
+      "id": "bentota",
+      "name": "Бентота",
+      "url": "https://t.me/shri_lanka_bentota",
+      "kind": "general",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    },
+    {
+      "id": "tangalle",
+      "name": "Тангалле",
+      "url": "https://t.me/chats_tangalle",
+      "kind": "general",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    },
+    {
+      "id": "kalutara",
+      "name": "Калутара — Ваддува",
+      "url": "https://t.me/kalutara_chat",
+      "kind": "general",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    },
+    {
+      "id": "parcel",
+      "name": "Шри-Ланка — посылочка",
+      "url": "https://t.me/shri_lanka_posylochka",
+      "kind": "general",
+      "status": "unverified",
+      "auto_publish": false,
+      "free_confirmed": false
+    }
+  ]
+}
