@@ -4,9 +4,10 @@ from datetime import UTC, date, datetime
 from typing import Literal
 from urllib.parse import urlsplit
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field, field_validator
 
+from radar.access import admin, traveler
 from radar.offers import connect
 
 router = APIRouter(prefix="/api")
@@ -65,7 +66,7 @@ def workspace_db():
     return db
 
 
-@router.get("/communities")
+@router.get("/communities", dependencies=[Depends(admin)])
 def communities():
     with closing(workspace_db()) as db:
         return {"rows": [dict(r) for r in db.execute(
@@ -93,17 +94,17 @@ def save_community(body, entry_id=None):
         raise HTTPException(409, "Telegram URL already exists") from exc
 
 
-@router.post("/communities", status_code=201)
+@router.post("/communities", status_code=201, dependencies=[Depends(admin)])
 def create_community(body: Community):
     return save_community(body)
 
 
-@router.put("/communities/{entry_id}")
+@router.put("/communities/{entry_id}", dependencies=[Depends(admin)])
 def update_community(entry_id: int, body: Community):
     return save_community(body, entry_id)
 
 
-@router.delete("/communities/{entry_id}")
+@router.delete("/communities/{entry_id}", dependencies=[Depends(admin)])
 def delete_community(entry_id: int):
     with closing(workspace_db()) as db, db:
         if db.execute("DELETE FROM communities WHERE id=?", (entry_id,)).rowcount != 1:
@@ -111,14 +112,14 @@ def delete_community(entry_id: int):
     return {"deleted": True}
 
 
-@router.get("/trips")
+@router.get("/trips", dependencies=[Depends(traveler)])
 def trips():
     with closing(workspace_db()) as db:
         return {"rows": [dict(r) for r in db.execute(
             "SELECT * FROM trips ORDER BY departure,id LIMIT 1000")]}
 
 
-@router.post("/trips", status_code=201)
+@router.post("/trips", status_code=201, dependencies=[Depends(traveler)])
 def create_trip(body: Trip):
     with closing(workspace_db()) as db, db:
         data = body.model_dump(mode="json")
@@ -128,7 +129,7 @@ def create_trip(body: Trip):
         return {"id": row.lastrowid, **data}
 
 
-@router.delete("/trips/{entry_id}")
+@router.delete("/trips/{entry_id}", dependencies=[Depends(traveler)])
 def delete_trip(entry_id: int):
     with closing(workspace_db()) as db, db:
         if db.execute("DELETE FROM trips WHERE id=?", (entry_id,)).rowcount != 1:

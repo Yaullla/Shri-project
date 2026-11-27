@@ -19,3 +19,17 @@ Based on v0.4 commit 16d413bd2333e66164b27aef8d82c22ec09d867b. Previous CI run 4
   only with controlled Codex sessions and approved budget. See docs/BENCHMARK.md.
 - Do not deploy publicly: no authentication or data isolation; no real payments,
   messaging, or personal customer data. No mass outreach.
+
+
+## v0.5.1
+- Previous PR #5 CI run 45946338555: 32 tests, all six jobs successful.
+- Five public Telegram community candidates with provenance notes, no outreach,
+  unknown ad cost, zero recorded leads. Opt-in idempotent seed:
+  `uv run python -m radar.seed_communities`. Existing edits preserved.
+- Separate local Basic Auth gates for administrator and traveler pages and APIs.
+  Default disabled until independent 16+ character passwords configured.
+  Host restriction and cross-origin write checks added. No production auth,
+  individual users, TLS, or tenant isolation. Never expose this dev server.
+- Added new API and browser tests including isolated protected workspace,
+  screenshots, edit persistence, and trip creation/deletion.
+- New CI run pending at commit time. No actual orders, payment or outreach.

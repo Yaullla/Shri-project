@@ -2,16 +2,29 @@
 from contextlib import closing
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI, Request
 from fastapi.responses import FileResponse
+from starlette.middleware.trustedhost import TrustedHostMiddleware
 from pydantic import BaseModel, Field
 
+from radar.access import admin, traveler
 from radar.community import router
 from radar.core import calculate_margin
 from radar.offers import connect
 
-app = FastAPI(title="Radar Buyer Workspace", version="0.5.0")
+app = FastAPI(title="Radar Buyer Workspace", version="0.5.1")
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1", "testserver"])
 app.include_router(router)
+
+
+@app.middleware("http")
+async def private_cache(request: Request, call_next):
+    response = await call_next(request)
+    if request.url.path.startswith(("/admin", "/travel", "/api/communities", "/api/trips")):
+        response.headers["Cache-Control"] = "no-store"
+    return response
+
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -41,7 +54,7 @@ def calculate(body: Calculation):
     return calculate_margin(**body.model_dump())
 
 
-@app.get("/admin", include_in_schema=False)
-@app.get("/travel", include_in_schema=False)
+@app.get("/admin", include_in_schema=False, dependencies=[Depends(admin)])
+@app.get("/travel", include_in_schema=False, dependencies=[Depends(traveler)])
 def workspace_sections():
     return FileResponse(ROOT / "web" / "community.html")
