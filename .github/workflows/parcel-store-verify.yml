@@ -24,6 +24,19 @@ jobs:
         run: cd marketing && python3 -m unittest -v test_publisher test_scheduler && python3 publisher.py && node configure-profile.mjs
       - name: Node smoke tests
         run: node --test test_motion.mjs
+      - name: Verify static preview file allowlist
+        run: |
+          node build-preview.mjs
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          root=Path("dist")
+          actual={str(x.relative_to(root)) for x in root.rglob("*") if x.is_file()}
+          assert actual=={"index.html","robots.txt","vendor/anime-4.5.0.min.js","vendor/anime-LICENSE.md","marketing.html","marketing/communities.json","marketing/campaign-new-year.txt"},actual
+          groups=json.loads((root/"marketing/communities.json").read_text())["communities"]
+          assert len(groups)==30 and all(not g["auto_publish"] and not g["free_confirmed"] for g in groups)
+          assert "marketing.html" in (root/"index.html").read_text()
+          PY
       - name: Install pinned browser test dependency
         run: |
           python3 -m pip install playwright==1.65.2
