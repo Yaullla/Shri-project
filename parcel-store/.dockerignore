@@ -1,0 +1,9 @@
+.git
+.env
+.env.*
+*.sqlite3
+*.sqlite3-*
+*.db
+*.db-*
+private-assets/
+__pycache__/
