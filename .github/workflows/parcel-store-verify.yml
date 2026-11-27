@@ -10,7 +10,7 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 12
     defaults:
       run:
         working-directory: parcel-store
@@ -19,6 +19,14 @@ jobs:
       - name: Python offline regression tests
         run: |
           python3 -m unittest -v test_pilot test_tracking
-          python3 -m py_compile pilot_api.py bot.py
+          python3 -m py_compile pilot_api.py bot.py manage_pilot.py
       - name: Node smoke tests
         run: node --test test_motion.mjs
+      - name: Install pinned browser test dependency
+        run: |
+          python3 -m pip install playwright==1.65.2
+          python3 -m playwright install --with-deps chromium
+      - name: Real browser checks
+        run: python3 -m unittest -v test_browser
+      - name: Verify deployment image builds
+        run: docker build -t samobranka-pilot:test .
