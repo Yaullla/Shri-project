@@ -46,7 +46,7 @@ def parse_history(payload):
         e.tag = e.tag.rsplit("}", 1)[-1]
     if root.find(".//Fault") is not None or root.find(".//Error") is not None:
         raise TrackingError("Carrier returned an error")
-    history = root.find(".//OperationHistoryData")
+    history = root if root.tag == "OperationHistoryData" else root.find(".//OperationHistoryData")
     if history is None:
         raise TrackingError("Missing carrier history")
     results = {}
