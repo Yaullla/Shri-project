@@ -3,6 +3,7 @@ Runs only explicitly approved one-shot jobs from a private JSON file.
 No queue or token is stored in Git; no automatic retry after an attempted send.
 """
 import argparse
+from contextlib import closing
 import datetime as dt
 import json
 import os
@@ -27,7 +28,7 @@ def tick(queue, dbpath, token, now=None, sender=publish, execute=False):
     now=now or dt.datetime.now(UTC)
     enabled,jobs=load_queue(queue)
     if not enabled: return {"mode":"paused","jobs":len(jobs),"sent":0}
-    with sqlite3.connect(dbpath,timeout=10) as db:
+    with closing(sqlite3.connect(dbpath,timeout=10)) as db:
         db.execute("CREATE TABLE IF NOT EXISTS publications(job_id TEXT PRIMARY KEY, chat_id INTEGER NOT NULL, attempted_at TEXT NOT NULL, state TEXT NOT NULL, message_id INTEGER)")
         done={r[0] for r in db.execute("SELECT job_id FROM publications")}
     summary={"mode":"live" if execute else "dry-run","jobs":len(jobs),"due":0,"sent":0,"blocked":0,"pending":0,"expired":0,"attempted":0}
@@ -77,7 +78,10 @@ def main():
     while True:
         if (root/"STOP").exists():
             print('{"mode":"stopped"}',flush=True);return
-        try: print(json.dumps(tick(queue,db,token,execute=args.send),ensure_ascii=False),flush=True)
+        try:
+            result=tick(queue,db,token,execute=args.send)
+            print(json.dumps(result,ensure_ascii=False),flush=True)
+            if args.send and result.get("blocked"):return
         except (ValueError,KeyError,TypeError,OSError,sqlite3.Error):
             print('{"mode":"blocked","reason":"queue or storage invalid"}',flush=True);return
         if not args.watch:return
