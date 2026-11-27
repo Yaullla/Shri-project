@@ -163,6 +163,7 @@ class Store:
 
 def build_handler(store,token,admins,enabled):
     class Handler(BaseHTTPRequestHandler):
+        timeout=15
         def log_message(self,*args): pass
         def send(self,status,payload,media="application/json; charset=utf-8"):
             raw=json.dumps(payload,ensure_ascii=False).encode() if isinstance(payload,(dict,list)) else payload
@@ -180,7 +181,9 @@ def build_handler(store,token,admins,enabled):
             if self.command=="GET":
                 if path in ("/","/miniapp"):
                     return self.send(200,(ROOT/"miniapp.html").read_bytes(),"text/html; charset=utf-8")
-                if path=="/health": return self.send(200,{"ok":True})
+                if path=="/health":
+                    with store.connection() as c: c.execute("SELECT 1").fetchone()
+                    return self.send(200,{"ok":True})
                 match=re.fullmatch(r"/photos/([a-z]+)\.webp",path)
                 if match and match[1] in {p[0] for p in PRODUCTS}:
                     asset=ASSETS/(match[1]+".webp")
@@ -215,5 +218,7 @@ if __name__=="__main__":
     admins={int(x) for x in os.environ.get("SAM_ADMIN_IDS","").split(",") if x.strip()}
     enabled=os.environ.get("SAM_ACCEPT_REQUESTS")=="1"
     if enabled and (not token or not admins): raise SystemExit("Configure bot token and admin IDs first")
+    if enabled and os.environ.get("SAM_BIND")=="0.0.0.0" and not os.path.isabs(os.environ.get("SAM_DB","")):
+        raise SystemExit("Set SAM_DB to an absolute persistent volume path")
     db=Store(os.environ.get("SAM_DB","samobranka.sqlite3"),int(os.environ.get("SAM_CAPACITY_GRAMS","29000")))
-    ThreadingHTTPServer(("127.0.0.1",8081),build_handler(db,token,admins,enabled)).serve_forever()
+    ThreadingHTTPServer((os.environ.get("SAM_BIND","127.0.0.1"),int(os.environ.get("PORT","8081"))),build_handler(db,token,admins,enabled)).serve_forever()
