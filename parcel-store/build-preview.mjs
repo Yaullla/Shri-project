@@ -13,5 +13,8 @@ html=html.replace('<head>','<head><meta name="robots" content="noindex,nofollow"
 html=html.replace('<body>','<body><div role="status" style="background:#edf2fa;color:#193251;padding:8px 14px;text-align:center;font:13px/1.4 system-ui">Техническая демонстрация. Только тестовые данные; реальные заказы и оплата недоступны.</div>');
 await writeFile(join(output,'index.html'),html,'utf8');
 for(const file of ['anime-4.5.0.min.js','anime-LICENSE.md']) await copyFile(join(root,'vendor',file),join(output,'vendor',file));
+await mkdir(join(output,'marketing'),{recursive:true});
+await copyFile(join(root,'marketing.html'),join(output,'marketing.html'));
+for(const file of ['communities.json','campaign-new-year.txt'])await copyFile(join(root,'marketing',file),join(output,'marketing',file));
 await writeFile(join(output,'robots.txt'),'User-agent: *\nDisallow: /\n');
 console.log('Static preview prepared in dist; no server files or database included.');
